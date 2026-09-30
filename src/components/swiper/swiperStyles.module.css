@@ -1,0 +1,17 @@
+@import "swiper/css";
+@import "swiper/css/pagination";
+
+
+.swiper-pagination-bullet {
+    background: #d8c819;
+    opacity: 0.6;
+}
+
+.swiper-pagination-bullet-active {
+    background: #000;
+    opacity: 1;
+}
+
+.classSwiperWrapper {}
+
+.classSwiper {}

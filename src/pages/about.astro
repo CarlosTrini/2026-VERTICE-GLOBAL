@@ -1,0 +1,282 @@
+---
+import MainLayout from "../layouts/MainLayout.astro";
+import { Image } from "astro:assets";
+import heroImage from "../assets/images/heroImage.png";
+import {
+    ArrowLeft,
+    Sparkles,
+    Globe,
+    ShieldCheck,
+    Compass,
+    Newspaper,
+    Award,
+    HeartHandshake,
+    Layers,
+    Clock,
+    Mail,
+    ChevronRight,
+} from "lucide-astro";
+---
+
+<MainLayout
+    title="Quiénes Somos | El Vértice Global"
+    description="Conoce la misión, valores y el compromiso del equipo editorial detrás de El Vértice Global: periodismo digital independiente y verídico."
+>
+    <!-- BARRA SUPERIOR DE NAVEGACIÓN Y REGRESO -->
+    <div class="bg-primary border-b border-quinary/30 py-3 section-padding">
+        <div class="max-w-6xl mx-auto flex items-center justify-between gap-4">
+            <a
+                href="/"
+                class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-quinary/40 hover:bg-tertiary text-secondary transition-all duration-300 font-semibold text-xs md:text-sm border border-quinary/50 hover:border-tertiary group"
+            >
+                <ArrowLeft
+                    class="w-4 h-4 group-hover:-translate-x-1 transition-transform"
+                />
+                <span>Volver al Inicio</span>
+            </a>
+
+            <div class="flex items-center gap-2 text-xs text-secondary/60">
+                <a href="/" class="hover:text-white transition-colors">Inicio</a>
+                <span>/</span>
+                <span>Institucional</span>
+                <span>/</span>
+                <span class="text-tertiary font-medium">Quiénes Somos</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- HERO PRINCIPAL DE ABOUT -->
+    <header
+        class="relative overflow-hidden bg-linear-to-tr from-primary to-quinary text-secondary py-12 md:py-20 border-b border-secondary/10"
+    >
+        <!-- Luces ambientales de fondo -->
+        <div
+            class="pointer-events-none absolute -top-32 -left-32 w-96 h-96 rounded-full blur-[120px] opacity-25 bg-tertiary"
+        >
+        </div>
+        <div
+            class="pointer-events-none absolute -bottom-32 right-0 w-96 h-96 rounded-full blur-[120px] opacity-25 bg-quinary"
+        >
+        </div>
+        <div
+            class="pointer-events-none absolute inset-0 bg-[radial-gradient(#ffffff0a_1px,transparent_1px)] bg-size-24 opacity-50"
+        >
+        </div>
+
+        <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div
+                class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs text-secondary backdrop-blur-sm mb-4"
+            >
+                <Sparkles class="w-4 h-4 text-tertiary" />
+                <span class="font-bold tracking-wide uppercase"
+                    >Nuestra Identidad Editorial</span
+                >
+            </div>
+
+            <h1
+                class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white tracking-tight mb-5 leading-tight"
+            >
+                Acerca de <span class="about-gradient-title">El Vértice Global</span>
+            </h1>
+
+            <p
+                class="text-base sm:text-lg md:text-xl text-secondary/85 max-w-3xl leading-relaxed mb-8"
+            >
+                Un medio digital independiente nacido para ofrecer análisis riguroso, cobertura global en tiempo real y una mirada reflexiva sobre las transformaciones que definen nuestro mundo.
+            </p>
+
+            <div
+                class="flex flex-wrap items-center gap-4 text-xs md:text-sm text-secondary/75 pt-4 border-t border-white/10"
+            >
+                <span class="flex items-center gap-2 bg-white/5 border border-white/10 rounded-lg px-3 py-1.5">
+                    <Globe class="w-4 h-4 text-tertiary" />
+                    Cobertura Internacional
+                </span>
+                <span class="flex items-center gap-2 bg-white/5 border border-white/10 rounded-lg px-3 py-1.5">
+                    <ShieldCheck class="w-4 h-4 text-emerald-400" />
+                    Periodismo Verificado
+                </span>
+                <span class="flex items-center gap-2 bg-white/5 border border-white/10 rounded-lg px-3 py-1.5">
+                    <Clock class="w-4 h-4 text-amber-400" />
+                    Actualización Continua
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <!-- CUERPO PRINCIPAL -->
+    <main class="section-padding bg-secondary py-12 md:py-20 space-y-16">
+        <div class="max-w-6xl mx-auto space-y-16">
+            <!-- SECCIÓN 1: MISIÓN E ILUSTRACIÓN HEROIMAGE -->
+            <section class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+                <!-- Columna Ilustración con heroImage -->
+                <div class="lg:col-span-6 relative">
+                    <div class="relative rounded-3xl overflow-hidden shadow-2xl border border-primary/10 group">
+                        <Image
+                            src={heroImage}
+                            alt="Redacción y cobertura de El Vértice Global"
+                            class="w-full h-80 sm:h-96 md:h-110 object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                        <div class="absolute inset-0 bg-gradient-to-t from-primary/80 via-transparent to-transparent"></div>
+
+                        <!-- Badge Flotante sobre la imagen -->
+                        <div class="absolute bottom-5 left-5 right-5 p-4 rounded-2xl bg-primary/85 backdrop-blur-md border border-white/10 text-secondary">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-tertiary/20 text-tertiary flex items-center justify-center shrink-0 border border-tertiary/30">
+                                    <Compass class="w-5 h-5" />
+                                </div>
+                                <div>
+                                    <span class="text-[11px] uppercase tracking-wider text-tertiary font-bold block">Compromiso</span>
+                                    <p class="text-xs text-white font-medium">Informar con verdad, contexto y rigor en cada nota.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Columna Texto: Misión y Razón de Ser -->
+                <div class="lg:col-span-6 space-y-6">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-quinary/15 text-quinary text-xs font-bold uppercase tracking-wider">
+                        <Layers class="w-3.5 h-3.5 text-quaternary" />
+                        Nuestra Razón de Ser
+                    </div>
+
+                    <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-quinary leading-tight">
+                        Donde converge la actualidad con el análisis profundo
+                    </h2>
+
+                    <p class="text-gray-700 text-sm sm:text-base leading-relaxed">
+                        En una era dominada por la sobreinformación y los titulares superficiales, <strong>El Vértice Global</strong> surge como una respuesta necesaria: un espacio donde las noticias se investigan a fondo, se contrastan y se explican con claridad.
+                    </p>
+
+                    <p class="text-gray-700 text-sm sm:text-base leading-relaxed">
+                        Nuestro equipo trabaja para que cada lector, sin importar dónde se encuentre, cuente con las herramientas analíticas para entender cómo los avances tecnológicos, los cambios económicos, la ciencia y la cultura modelan el porvenir colectivo.
+                    </p>
+
+                    <div class="pt-2">
+                        <div class="p-4 rounded-2xl bg-white border border-gray-200 shadow-sm flex items-start gap-3">
+                            <HeartHandshake class="w-6 h-6 text-tertiary shrink-0 mt-0.5" />
+                            <div>
+                                <h3 class="font-bold text-gray-900 text-sm">Libre de Sensacionalismo</h3>
+                                <p class="text-xs text-gray-600 leading-relaxed mt-0.5">
+                                    Priorizamos los hechos verificables sobre los clics fáciles, asegurando contenidos constructivos y éticos.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 2: PILARES Y VALORES EDITORIALES -->
+            <section class="space-y-8">
+                <div class="text-center max-w-2xl mx-auto space-y-2">
+                    <span class="text-xs font-bold uppercase tracking-wider text-quaternary">Nuestros Principios</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-quinary">Los Pilares de Nuestro Trabajo</h2>
+                    <p class="text-xs sm:text-sm text-gray-600">
+                        Cada publicación responde a un riguroso estándar deontológico y periodístico.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Tarjeta 1 -->
+                    <article class="bg-primary text-secondary rounded-2xl p-6 sm:p-8 border border-quinary/30 shadow-md space-y-3 hover:border-tertiary/50 transition-all duration-300">
+                        <div class="w-12 h-12 rounded-xl bg-tertiary/15 text-tertiary flex items-center justify-center font-bold text-xl border border-tertiary/30">
+                            <ShieldCheck class="w-6 h-6" />
+                        </div>
+                        <h3 class="text-lg font-bold text-white">Rigor y Verificación</h3>
+                        <p class="text-xs sm:text-sm text-secondary/75 leading-relaxed">
+                            Contrastamos cada información con fuentes oficiales, especialistas académicos y documentación probatoria antes de su publicación.
+                        </p>
+                    </article>
+
+                    <!-- Tarjeta 2 -->
+                    <article class="bg-primary text-secondary rounded-2xl p-6 sm:p-8 border border-quinary/30 shadow-md space-y-3 hover:border-tertiary/50 transition-all duration-300">
+                        <div class="w-12 h-12 rounded-xl bg-quinary/40 text-tertiary flex items-center justify-center font-bold text-xl border border-quinary/50">
+                            <Award class="w-6 h-6" />
+                        </div>
+                        <h3 class="text-lg font-bold text-white">Independencia Editorial</h3>
+                        <p class="text-xs sm:text-sm text-secondary/75 leading-relaxed">
+                            Nuestra línea informativa no responde a intereses corporativos, partidistas ni presiones económicas. Nuestra lealtad es con el lector.
+                        </p>
+                    </article>
+
+                    <!-- Tarjeta 3 -->
+                    <article class="bg-primary text-secondary rounded-2xl p-6 sm:p-8 border border-quinary/30 shadow-md space-y-3 hover:border-tertiary/50 transition-all duration-300">
+                        <div class="w-12 h-12 rounded-xl bg-tertiary/15 text-tertiary flex items-center justify-center font-bold text-xl border border-tertiary/30">
+                            <Newspaper class="w-6 h-6" />
+                        </div>
+                        <h3 class="text-lg font-bold text-white">Diversidad Temática</h3>
+                        <p class="text-xs sm:text-sm text-secondary/75 leading-relaxed">
+                            Abarcamos 11 categorías de conocimiento humano con cobertura especializada para una visión panorámica y plural.
+                        </p>
+                    </article>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 3: CIFRAS / IMPACTO -->
+            <section class="bg-primary text-secondary rounded-3xl p-8 sm:p-12 border border-quinary/40 shadow-xl relative overflow-hidden">
+                <div class="pointer-events-none absolute top-0 right-0 w-80 h-80 rounded-full bg-tertiary/10 blur-3xl"></div>
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center relative z-10">
+                    <div class="space-y-1">
+                        <span class="text-3xl sm:text-5xl font-black text-tertiary">11</span>
+                        <p class="text-xs uppercase tracking-wider text-secondary/80 font-bold">Secciones Temáticas</p>
+                    </div>
+                    <div class="space-y-1">
+                        <span class="text-3xl sm:text-5xl font-black text-white">24/7</span>
+                        <p class="text-xs uppercase tracking-wider text-secondary/80 font-bold">Monitoreo Global</p>
+                    </div>
+                    <div class="space-y-1">
+                        <span class="text-3xl sm:text-5xl font-black text-tertiary">100%</span>
+                        <p class="text-xs uppercase tracking-wider text-secondary/80 font-bold">Acceso Libre</p>
+                    </div>
+                    <div class="space-y-1">
+                        <span class="text-3xl sm:text-5xl font-black text-white">0</span>
+                        <p class="text-xs uppercase tracking-wider text-secondary/80 font-bold">Sesgo Editorial</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 4: CONTACTO Y RETORNO -->
+            <section class="bg-white rounded-3xl p-8 sm:p-12 border border-gray-200 shadow-md flex flex-col md:flex-row items-center justify-between gap-8">
+                <div class="space-y-2 text-center md:text-left">
+                    <span class="text-xs font-bold uppercase tracking-wider text-quaternary">¿Tienes una historia o sugerencia?</span>
+                    <h3 class="text-xl sm:text-2xl font-black text-quinary">Nuestra redacción siempre está abierta</h3>
+                    <p class="text-xs sm:text-sm text-gray-600 max-w-xl">
+                        Escríbenos directamente para compartir información relevante, notas de prensa o consultas a través de nuestro buzón oficial.
+                    </p>
+                </div>
+
+                <div class="flex flex-col sm:flex-row items-center gap-4 shrink-0 w-full sm:w-auto">
+                    <a
+                        href="mailto:redaccion@elverticeglobal.com"
+                        class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-2xl bg-quinary text-secondary hover:bg-quaternary transition-colors duration-300 font-bold text-xs uppercase tracking-wider w-full sm:w-auto text-center"
+                    >
+                        <Mail class="w-4 h-4 text-tertiary" />
+                        <span>Escribir a Redacción</span>
+                    </a>
+
+                    <a
+                        href="/"
+                        class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-2xl bg-primary text-secondary hover:bg-tertiary transition-all duration-300 font-bold text-xs uppercase tracking-wider w-full sm:w-auto text-center group"
+                    >
+                        <ArrowLeft class="w-4 h-4 group-hover:-translate-x-1 transition-transform text-tertiary group-hover:text-secondary" />
+                        <span>Regresar al Inicio</span>
+                    </a>
+                </div>
+            </section>
+        </div>
+    </main>
+</MainLayout>
+
+<style>
+    .about-gradient-title {
+        background: linear-gradient(
+            135deg,
+            #ffffff 30%,
+            var(--color-tertiary) 100%
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+</style>

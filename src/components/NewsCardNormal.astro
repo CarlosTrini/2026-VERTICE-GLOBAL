@@ -1,0 +1,150 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { Calendar, User, ArrowRight } from "lucide-astro";
+
+interface Props {
+    article: CollectionEntry<"news"> | any;
+}
+
+const { article } = Astro.props;
+
+// Soporte flexible para CollectionEntry (article.data) u objeto directo
+const data = article?.data ?? article ?? {};
+const {
+    title = "Sin título",
+    description = "",
+    pubDate,
+    author = "Redacción",
+    topic = "General",
+    image,
+    slug = article?.id || article?.slug || "#",
+} = data;
+
+// Formateo de fecha localizada (ej: 10 sep 2026)
+const formattedDate = pubDate
+    ? new Intl.DateTimeFormat("es-ES", {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+      }).format(new Date(pubDate))
+    : "Reciente";
+
+// Truncar descripción a un máximo estricto de 60 caracteres
+const rawDesc = (description || "").trim();
+const truncatedDescription =
+    rawDesc.length > 60 ? `${rawDesc.slice(0, 100).trimEnd()}...` : rawDesc;
+
+// Clase de tag según categoría definida en global.css
+const normalizedTopic = (topic || "general").toLowerCase().trim();
+const categoryTagClass = `${normalizedTopic}-tag`;
+
+// Manejo de imagen con URL o fallback
+const imageUrl = image?.startsWith("http")
+    ? image
+    : image
+      ? image.startsWith("/")
+          ? image
+          : `/${image}`
+      : "https://picsum.photos/seed/news/800/600";
+---
+
+<article
+    class="min-h-100 group relative flex flex-col h-full bg-primary rounded-md overflow-hidden shadow-md hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-300 border border-quinary/15"
+>
+    <!-- Contenedor de Imagen y Tag de Categoría -->
+    <div class="absolute inset-0 z-0 overflow-hidden bg-primary">
+        <img
+            src={imageUrl}
+            alt={title}
+            loading="lazy"
+            class="w-full h-full object-cover group-hover:scale-105 transition-all duration-500 ease-out opacity-75 group-hover:opacity-90"
+        />
+
+        <!-- Overlay con opacidad para contraste y profundidad cromática -->
+        <div
+            class="absolute inset-0 bg-primary/40 group-hover:bg-primary/20 transition-colors duration-500 pointer-events-none"
+        >
+        </div>
+
+        <!-- Gradiente fluido para máxima legibilidad y elegancia visual -->
+        <div
+            class="absolute inset-0 bg-linear-to-t from-primary via-primary/80 via-50% to-black/20 pointer-events-none"
+        >
+        </div>
+
+        <!-- Tag de Categoría -->
+        <span
+            class={`absolute top-3 left-3 text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full shadow-md backdrop-blur-xs transition-transform duration-300 group-hover:scale-105 ${categoryTagClass}`}
+        >
+            {topic}
+        </span>
+    </div>
+
+    <!-- Contenido de la Card -->
+    <div
+        class="w-full p-5 flex flex-col flex-1 justify-between gap-4 absolute z-10 bottom-0"
+    >
+        <div class="space-y-3">
+            <!-- Metadatos: Día y Autor -->
+            <div
+                class="flex flex-wrap items-center justify-between gap-2 text-xs font-semibold text-quinary/75"
+            >
+                <!-- Día con icono de calendario -->
+                <span
+                    class="inline-flex items-center gap-1.5 text-secondary font-bold"
+                    title={`Publicado: ${formattedDate}`}
+                >
+                    <Calendar class="w-3.5 h-3.5 shrink-0 text-tertiary" />
+                    <time
+                        datetime={pubDate
+                            ? new Date(pubDate).toISOString()
+                            : undefined}
+                    >
+                        {formattedDate}
+                    </time>
+                </span>
+
+                <!-- Autor con icono de usuario -->
+                <span
+                    class="inline-flex items-center gap-1.5 truncate max-w-32.5 text-secondary"
+                    title={`Autor: ${author}`}
+                >
+                    <User class="w-3.5 h-3.5 shrink-0 text-tertiary" />
+                    <span class="truncate italic font-bold">{author}</span>
+                </span>
+            </div>
+
+            <!-- Título de la nota -->
+            <h3
+                class="font-bold text-lg leading-snug line-clamp-2 text-primary group-hover:text-tertiary transition-colors duration-200"
+            >
+                <a
+                    href={`/news/${slug}`}
+                    class="hover:underline underline-offset-2 focus:outline-hidden italic text-secondary"
+                >
+                    {title}
+                </a>
+            </h3>
+
+            <!-- Descripción (máximo 60 caracteres) -->
+            <p
+                class="text-md text-secondary leading-relaxed line-clamp-2 font-normal"
+            >
+                {truncatedDescription}
+            </p>
+        </div>
+
+        <!-- Pie de Card: Acción / Enlace a la nota -->
+        <div
+            class="pt-3 border-t border-quinary/10 flex items-center justify-between text-xs font-bold text-tertiary group-hover:text-quaternary transition-colors duration-200"
+        >
+            <a
+                href={`/news/${slug}`}
+                class="text-4 inline-flex items-center gap-1.5 group-hover:translate-x-1 transition-transform duration-200"
+            >
+                <span>Leer nota</span>
+                <ArrowRight class="w-3.5 h-3.5" />
+            </a>
+        </div>
+    </div>
+</article>

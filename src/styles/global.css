@@ -1,0 +1,107 @@
+/**
+ * ¿Qué cosas se pueden agregar aquí (src/styles/)?
+ * 
+ * Estilos globales y tokens de diseño para toda la aplicación:
+ * 1. Importación base de Tailwind CSS (@import "tailwindcss";).
+ * 2. Variables CSS personalizadas (Design Tokens) para temas claro/oscuro:
+ *    --primary-color, --bg-surface, --radius-card, etc.
+ * 3. Reglas de tipografía global y fuentes personalizadas con @font-face.
+ * 4. Animaciones y keyframes personalizados para transiciones o efectos de brillo.
+ * 5. Estilos de scrollbar y selecciones de texto personalizadas.
+ * 6. Clases de utilidad globales (@utility o clases CSS puras) que no cubra el framework.
+ */
+
+@import "tailwindcss";
+@import "tags";
+@import "newsSlug";
+
+
+
+/* @custom-variant dark (&:where(.dark, .dark *)); */
+:root {
+  --color-primary: rgb(1, 1, 20);
+  --color-secondary: rgb(242, 242, 247);
+  --color-tertiary: rgb(243, 126, 17);
+  --color-quaternary: rgb(185, 97, 14);
+  --color-quinary: rgb(37, 37, 100);
+}
+
+.dark {
+  --color-primary: rgb(123, 123, 185);
+}
+
+@theme {
+  --color-primary: var(--color-primary);
+  --color-secondary: var(--color-secondary);
+  --color-tertiary: var(--color-tertiary);
+  --color-quaternary: var(--color-quaternary);
+  --color-quinary: var(--color-quinary);
+}
+
+
+.section-padding {
+  padding-left: calc(10vw/2);
+  padding-right: calc(10vw/2);
+  padding-bottom: 50px;
+  padding-top: 30px;
+}
+
+.titles-section {
+  text-align: start;
+  font-size: 3rem;
+  margin-bottom: 2rem;
+  font-weight: 900;
+  font-style: italic;
+}
+
+.tecnologia-tag {
+  background-color: #7c3aed80;
+
+  color: white;
+}
+
+.entretenimiento-tag {
+  background-color: #2563eb80;
+  color: white;
+}
+
+.deportes-tag {
+  background-color: #dc262680;
+  color: white;
+}
+
+.ciencia-tag {
+  background-color: #0891b280;
+  color: white;
+}
+
+
+.gastronomia-tag {
+  background-color: #ea580c80;
+  color: white;
+}
+
+.viajes-tag {
+  background-color: #0d948880;
+  color: white;
+}
+
+.economia-tag {
+  background-color: #db277780;
+  color: white;
+}
+
+.farandula-tag {
+  background-color: #c026d380;
+  color: white;
+}
+
+.misterio-tag {
+  background-color: #4f46e580;
+  color: white;
+}
+
+.cultura-tag {
+  background-color: #57534e80;
+  color: white;
+}

@@ -1,0 +1,391 @@
+---
+import MainLayout from "../../layouts/MainLayout.astro";
+import NewsCardSmall from "../../components/NewsCardSmall.astro";
+import NewsCardNormal from "../../components/NewsCardNormal.astro";
+import NewsCardMedium from "../../components/NewsCardMedium.astro";
+import { Clock, ChevronRight, Newspaper, Hash } from "lucide-astro";
+import { getCollection } from "astro:content";
+import type { SwiperI } from "../../components/swiper/swiperType";
+import SwiperComponent from "../../components/swiper/SwiperComponent.astro";
+import { SwiperSlide } from "astro-swiper";
+
+export async function getStaticPaths() {
+    const news = await getCollection("news");
+
+    // Aquí SÍ necesitas las únicas, porque un param = una página,
+    // y no quieres 50 páginas idénticas para la misma categoría.
+    const topics = [...new Set(news.map((n) => n.data.topic))];
+
+    return topics.map((topic) => ({
+        params: { topic },
+    }));
+}
+
+const { topic } = Astro.params;
+console.log(topic);
+
+const filteredTopics = await getCollection(
+    "news",
+    ({ data }) => data.topic === topic,
+);
+
+// Metadatos editoriales por tópico
+const topicMetaMap: Record<
+    string,
+    {
+        title: string;
+        subtitle: string;
+        description: string;
+        tagClass: string;
+        accentColor: string;
+    }
+> = {
+    tecnologia: {
+        title: "Tecnología",
+        subtitle: "Innovación, IA, hardware y el futuro digital",
+        description:
+            "Explora las últimas novedades en inteligencia artificial, desarrollo tecnológico, computación cuántica y los dispositivos que transforman el mundo.",
+        tagClass: "tecnologia-tag",
+        accentColor: "#7c3aed",
+    },
+    entretenimiento: {
+        title: "Entretenimiento",
+        subtitle: "Cine, series, música, streaming y videojuegos",
+        description:
+            "Toda la actualidad sobre estrenos mundiales, festivales de música, producciones de televisión y la cultura popular que marca tendencia.",
+        tagClass: "entretenimiento-tag",
+        accentColor: "#2563eb",
+    },
+    deportes: {
+        title: "Deportes",
+        subtitle: "Competición, torneos de élite y atletas mundiales",
+        description:
+            "Sigue minuto a minuto los resultados, crónicas deportivas, grandes campeonatos internacionales y las historias de superación atlética.",
+        tagClass: "deportes-tag",
+        accentColor: "#dc2626",
+    },
+    misterio: {
+        title: "Misterio",
+        subtitle: "Enigmas históricos, fenómenos cósmicos y lo inexplicable",
+        description:
+            "Investigaciones fascinantes sobre sucesos sin resolver, enigmas arqueológicos y fenómenos que desafían las explicaciones convencionales.",
+        tagClass: "misterio-tag",
+        accentColor: "#4f46e5",
+    },
+    farandula: {
+        title: "Farándula",
+        subtitle: "Celebridades, alfombras rojas y vida social",
+        description:
+            "Las historias detrás de las estrellas globales, coberturas exclusivas de galas de premios y lo más comentado del espectáculo internacional.",
+        tagClass: "farandula-tag",
+        accentColor: "#c026d3",
+    },
+    ciencia: {
+        title: "Ciencia",
+        subtitle: "Exploración espacial, física y descubrimientos clave",
+        description:
+            "Divulgación rigurosa de hallazgos astronómicos, investigaciones de vanguardia y la constante expansión de las fronteras del conocimiento.",
+        tagClass: "ciencia-tag",
+        accentColor: "#0891b2",
+    },
+    salud: {
+        title: "Salud",
+        subtitle: "Bienestar integral, nutrición y avances médicos",
+        description:
+            "Información verificada por especialistas sobre hábitos saludables, neurociencia, bienestar mental y descubrimientos médicos esenciales.",
+        tagClass: "salud-tag",
+        accentColor: "#16a34a",
+    },
+    economia: {
+        title: "Economía",
+        subtitle: "Mercados globales, finanzas corporativas y fintech",
+        description:
+            "Análisis exhaustivo de la coyuntura financiera internacional, tendencias de inversión, criptoeconomía y transformaciones bancarias.",
+        tagClass: "economia-tag",
+        accentColor: "#db2777",
+    },
+    viajes: {
+        title: "Viajes",
+        subtitle: "Rutas escénicas, destinos remotos y turismo sostenible",
+        description:
+            "Inspiración para exploradores del mundo: parajes vírgenes, ciudades históricas, rutas en tren y experiencias gastronómicas inolvidables.",
+        tagClass: "viajes-tag",
+        accentColor: "#0d9488",
+    },
+    cultura: {
+        title: "Cultura",
+        subtitle: "Arte contemporáneo, literatura, museos y patrimonio",
+        description:
+            "Un recorrido profundo por expresiones artísticas inmersivas, novedades literarias y el valor del patrimonio cultural internacional.",
+        tagClass: "cultura-tag",
+        accentColor: "#57534e",
+    },
+    gastronomia: {
+        title: "Gastronomía",
+        subtitle: "Sabores auténticos, cocina de autor y tradición",
+        description:
+            "Historias de fogones, técnicas culinarias de vanguardia, café de especialidad y rutas gastronómicas que conquistan paladares.",
+        tagClass: "gastronomia-tag",
+        accentColor: "#ea580c",
+    },
+};
+
+const topicKey = (topic || "").toLowerCase();
+const topicInfo = topicMetaMap[topicKey] || {
+    title: topic ? topic.charAt(0).toUpperCase() + topic.slice(1) : "Tópico",
+    subtitle: "Artículos y análisis especializados",
+    description: `Explora la cobertura completa de noticias y reportajes publicados bajo la sección de ${topic}.`,
+    tagClass: `${topicKey}-tag`,
+    accentColor: "rgb(243, 126, 17)",
+};
+
+const totalArticles = filteredTopics.length;
+
+// -------------------------------- PARA EL SWIPER
+const toolsSwiperOptions = {
+    slidesPerView: 1,
+    spaceBetween: 10,
+    loop: true,
+    autoplay: {
+        delay: 1500,
+        disableOnInteraction: false,
+        pauseOnMouseEnter: true,
+    },
+    breakpoints: {
+        450: {
+            // sm
+            slidesPerView: 1,
+            spaceBetween: 10,
+        },
+        // 540: {
+        //     // sm
+        //     slidesPerView: 4,
+        //     spaceBetween: 10,
+        // },
+        // 640: {
+        //     // sm
+        //     slidesPerView: 2,
+        //     spaceBetween: 10,
+        // },
+        // 768: {
+        //     md
+        //     slidesPerView: 2,
+        //     spaceBetween: 24,
+        // },
+        // 860: {
+        //     // sm
+        //     slidesPerView: 2,
+        //     spaceBetween: 20,
+        // },
+        1024: {
+            // lg
+            slidesPerView: 2,
+            spaceBetween: 25,
+        },
+        // 1280: {
+        //     // xl
+        //     slidesPerView: 5,
+        //     spaceBetween: 25,
+        // },
+        1536: {
+            // 2xl
+            slidesPerView: 3,
+            spaceBetween: 20,
+        },
+    },
+} as SwiperI;
+---
+
+<MainLayout
+    title={`${topicInfo.title} | El Vértice Global`}
+    description={topicInfo.description}
+>
+    <!-- HERO -->
+    <header
+        class="topic-hero relative overflow-hidden bg-linear-to-tr from-primary to-quinary text-secondary border-b border-secondary/10"
+    >
+        <!-- Glows ambientales dinámicos -->
+        <div
+            class="pointer-events-none absolute -top-40 -left-20 w-105 h-105 rounded-full blur-[120px] opacity-25"
+            style={`background-color: ${topicInfo.accentColor};`}
+        >
+        </div>
+        <div
+            class="pointer-events-none absolute top-10 right-0 w-90 h-90 rounded-full blur-[100px] opacity-15 bg-tertiary"
+        >
+        </div>
+        <div
+            class="pointer-events-none absolute inset-0 bg-[radial-gradient(#ffffff0a_1px,transparent_1px)] bg-size-24 opacity-60"
+        >
+        </div>
+
+        <div
+            class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-12 md:pt-12 md:pb-16"
+        >
+            <!-- Breadcrumbs & Canal Indicator -->
+            <nav
+                class="flex items-center gap-2 text-xs md:text-sm text-gray-400 font-medium mb-6"
+                aria-label="Ruta de navegación"
+            >
+                <a
+                    href="/"
+                    class="hover:text-white transition-colors duration-200 flex items-center gap-1.5"
+                >
+                    <span>Inicio</span>
+                </a>
+                <ChevronRight class="w-3.5 h-3.5 text-gray-600" />
+                <span class="text-gray-400">Tópicos</span>
+                <ChevronRight class="w-3.5 h-3.5 text-gray-600" />
+                <span class="text-tertiaryfont-semibold">{topicInfo.title}</span
+                >
+            </nav>
+
+            <!-- Contenido Principal del Hero -->
+            <!-- Columna Izquierda: Información del Tópico -->
+            <div class="space-y-4">
+                <!-- Badge del Tópico -->
+                <div class="flex flex-wrap items-center gap-3">
+                    <span
+                        class={`inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-black tracking-wider uppercase shadow-sm ${topicInfo.tagClass}`}
+                    >
+                        <Hash class="w-3.5 h-3.5" />
+                        {topic}
+                    </span>
+                </div>
+
+                <!-- Título del Hero -->
+                <h1
+                    class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tight leading-tight text-white"
+                >
+                    <span class="hero-topic-title capitalize"
+                        >{topicInfo.title}</span
+                    >
+                </h1>
+
+                <!-- Descripción editorial -->
+                <p
+                    class="text-base sm:text-lg text-gray-300 font-normal max-w-3xl leading-relaxed"
+                >
+                    {topicInfo.description}
+                </p>
+
+                <!-- Chips de Estadísticas / Confianza -->
+                <div
+                    class="pt-3 flex flex-wrap items-center gap-3 text-xs md:text-sm text-gray-300"
+                >
+                    <div
+                        class="flex items-center gap-2 bg-white/5 hover:bg-white/10 transition-colors border border-white/10 rounded-xl px-3.5 py-2 backdrop-blur-md"
+                    >
+                        <Newspaper class="w-4 h-4 text--tertiary" />
+                        <span>
+                            <strong class="text-white font-bold text-sm"
+                                >{totalArticles}{" "}</strong
+                            >
+                            {
+                                totalArticles === 1
+                                    ? "artículo disponible"
+                                    : "artículos disponibles"
+                            }
+                        </span>
+                    </div>
+
+                    <div
+                        class="flex items-center gap-2 bg-white/5 hover:bg-white/10 transition-colors border border-white/10 rounded-xl px-3.5 py-2 backdrop-blur-md"
+                    >
+                        <Clock class="w-4 h-4 text-emerald-400" />
+                        <span>Actualizaciones continuas</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Línea decorativa sutil inferior -->
+        <div
+            class="h-px w-full bg-linear-to-r from-transparent via-white/20 to-transparent"
+        >
+        </div>
+    </header>
+
+    <!-- TÓPICOS DESTACADOS -->
+    <section
+        class="section-padding md:max-w-350 mx-auto grid grid-cols-1 lg:grid-cols-2 gap-4"
+    >
+        <div class="">
+            <NewsCardNormal article={filteredTopics[0]} />
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {
+                filteredTopics
+                    .slice(1, 3)
+                    .map((article) => <NewsCardSmall article={article} />)
+            }
+        </div>
+    </section>
+
+    <section class="section-padding md:max-w-350 mx-auto">
+        <SwiperComponent
+            optionsSwiper={toolsSwiperOptions}
+            classSwiperUser={``}
+            classSwiperWrapperUser="pb-[45px]"
+            paginationUser={true}
+        >
+            {
+                filteredTopics.slice(2, 6).map((article) => (
+                    <SwiperSlide class="">
+                        <NewsCardMedium article={article} />
+                    </SwiperSlide>
+                ))
+            }
+        </SwiperComponent>
+    </section>
+
+    <section class="section-padding md:max-w-350 mx-auto">
+        <div
+            class="grid grid-cols-1 md:grid-cols-2 items-center gap-8 pb-10 mx-auto"
+        >
+            <div class="flex flex-col xl:flex-row xl:flex-wrap gap-4 w-full">
+                {
+                    filteredTopics
+                        .slice(2, 5)
+                        .map((article) => <NewsCardMedium article={article} />)
+                }
+            </div>
+            <div class="flex flex-col xl:flex-row xl:flex-wrap gap-4 w-full">
+                {
+                    filteredTopics
+                        .slice(2, 5)
+                        .map((article) => <NewsCardMedium article={article} />)
+                }
+            </div>
+        </div>
+    </section>
+
+    <section class="section-padding md:max-w-350 mx-auto">
+        <SwiperComponent
+            optionsSwiper={toolsSwiperOptions}
+            classSwiperUser={``}
+            classSwiperWrapperUser="pb-[45px]"
+            paginationUser={true}
+        >
+            {
+                filteredTopics.slice(2, 6).map((article) => (
+                    <SwiperSlide class="">
+                        <NewsCardNormal article={article} />
+                    </SwiperSlide>
+                ))
+            }
+        </SwiperComponent>
+    </section>
+</MainLayout>
+
+<style>
+    .hero-topic-title {
+        background: linear-gradient(
+            135deg,
+            #ffffff 30%,
+            var(--color-tertiary) 100%
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+</style>

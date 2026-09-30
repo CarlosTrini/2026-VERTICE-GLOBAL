@@ -1,0 +1,131 @@
+---
+/**
+ * Componente SEO Universal y Altamente Configurable para Astro.
+ * Inyecta todas las etiquetas estándar en el <head>:
+ * - Meta tags principales (title, description, canonical, robots, author, keywords).
+ * - Open Graph (og:title, og:image, og:url, og:type, og:site_name, og:locale, etc.).
+ * - Twitter Cards (twitter:card, twitter:site, twitter:title, twitter:image, etc.).
+ * - Datos estructurados Schema.org en formato JSON-LD (WebSite, Organization, Article, Custom).
+ * - Favicons, Theme Color y enlaces de Sitemap.
+ */
+import { siteConfig, generateDefaultSchemas, type SEOProps } from '../config/seo';
+
+interface Props extends SEOProps {}
+
+const {
+  title,
+  titleTemplate = siteConfig.titleTemplate,
+  description = siteConfig.description,
+  canonical,
+  image = siteConfig.defaultOgImage,
+  imageAlt = title || siteConfig.title,
+  ogType = 'website',
+  noindex = false,
+  nofollow = false,
+  author = siteConfig.author,
+  keywords = [],
+  locale = siteConfig.locale,
+  themeColor = siteConfig.themeColor,
+  publishDate,
+  modifiedDate,
+  article,
+  schema: customSchema,
+} = Astro.props;
+
+// Formateo del título (título dinámico con plantilla si no es la página de inicio o ya incluye el nombre)
+const formattedTitle = title
+  ? title === siteConfig.title
+    ? title
+    : titleTemplate.replace('%s', title)
+  : siteConfig.title;
+
+// Resolución de URLs canónicas y absolutas
+const canonicalURL = canonical 
+  ? new URL(canonical, Astro.site || siteConfig.url).toString()
+  : new URL(Astro.url.pathname, Astro.site || siteConfig.url).toString();
+
+const imageURL = new URL(image, Astro.site || siteConfig.url).toString();
+
+// Configuración de robots (index / follow)
+const robotsDirectives = [
+  noindex ? 'noindex' : 'index',
+  nofollow ? 'nofollow' : 'follow',
+].join(', ');
+
+// Fechas para artículos si están presentes
+const publishedTime = article?.publishedTime || (publishDate instanceof Date ? publishDate.toISOString() : publishDate);
+const modifiedTime = article?.modifiedTime || (modifiedDate instanceof Date ? modifiedDate.toISOString() : modifiedDate) || publishedTime;
+
+// Generar esquemas estructurados Schema.org JSON-LD
+const schemas = generateDefaultSchemas(canonicalURL, {
+  ...Astro.props,
+  title: formattedTitle,
+  description,
+  image: imageURL,
+  schema: customSchema,
+  article: article || (publishedTime ? { publishedTime, modifiedTime, author } : undefined)
+});
+---
+
+<!-- Codificación y Viewport -->
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="generator" content={Astro.generator} />
+
+<!-- Meta Tags Primarios -->
+<title>{formattedTitle}</title>
+<meta name="title" content={formattedTitle} />
+<meta name="description" content={description} />
+<link rel="canonical" href={canonicalURL} />
+<meta name="robots" content={robotsDirectives} />
+<meta name="author" content={author} />
+{keywords.length > 0 && <meta name="keywords" content={keywords.join(', ')} />}
+<meta name="theme-color" content={themeColor} />
+
+<!-- Favicons & Manifest -->
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="icon" href="/favicon.ico" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<link rel="sitemap" href="/sitemap-index.xml" />
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content={ogType} />
+<meta property="og:url" content={canonicalURL} />
+<meta property="og:title" content={formattedTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={imageURL} />
+<meta property="og:image:alt" content={imageAlt} />
+<meta property="og:site_name" content={siteConfig.name} />
+<meta property="og:locale" content={locale} />
+
+<!-- Open Graph específico para Artículos / Blogs -->
+{ogType === 'article' && publishedTime && (
+  <meta property="article:published_time" content={publishedTime} />
+)}
+{ogType === 'article' && modifiedTime && (
+  <meta property="article:modified_time" content={modifiedTime} />
+)}
+{ogType === 'article' && (article?.author || author) && (
+  <meta property="article:author" content={article?.author || author} />
+)}
+{ogType === 'article' && article?.section && (
+  <meta property="article:section" content={article.section} />
+)}
+{ogType === 'article' && article?.tags?.map((tag) => (
+  <meta property="article:tag" content={tag} />
+))}
+
+<!-- Twitter Cards -->
+<meta property="twitter:card" content={siteConfig.twitter.cardType} />
+<meta property="twitter:url" content={canonicalURL} />
+<meta property="twitter:title" content={formattedTitle} />
+<meta property="twitter:description" content={description} />
+<meta property="twitter:image" content={imageURL} />
+<meta property="twitter:image:alt" content={imageAlt} />
+<meta property="twitter:site" content={siteConfig.twitter.site} />
+<meta property="twitter:creator" content={siteConfig.twitter.handle} />
+
+<!-- Datos Estructurados JSON-LD (Schema.org) -->
+{schemas.map((item) => (
+  <script type="application/ld+json" set:html={JSON.stringify(item)} />
+))}

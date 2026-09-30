@@ -1,0 +1,227 @@
+---
+/**
+ * ¿Qué cosas se pueden agregar aquí (src/components/)?
+ *
+ * Componentes de interfaz de usuario reutilizables (principalmente estáticos en .astro o interactivos en .tsx/.jsx):
+ * 1. Elementos estructurales: Cabeceras (Header.astro), Pies de página (Footer.astro), Barras de navegación (Navbar.astro).
+ * 2. Elementos de diseño / UI Tokens: Botones (Button.astro), Tarjetas (Card.astro), Badges/Insignias (Badge.astro).
+ * 3. Secciones modulares de página: Hero.astro, Features.astro, Pricing.astro, Testimonials.astro, FAQ.astro.
+ * 4. Componentes con iconos: Wrappers con Lucide Icons (lucide-astro) para iconos limpios y livianos.
+ * 5. Componentes interactivos de framework (Islas de React): Componentes interactivos que requieren estado del cliente (client:load, client:visible).
+ */
+import {
+  Trophy,
+  BookOpen,
+  Computer,
+  Layers,
+  FileQuestionMark,
+  Menu,
+  Globe,
+  X,
+  User,
+} from "lucide-astro";
+
+const links = [
+  {
+    id: 1,
+    title: "Inicio",
+    path: "/",
+    icon: Layers,
+  },
+  {
+    id: 2,
+    title: "Tecnología",
+    path: "/#technology-section",
+    icon: Computer,
+  },
+  {
+    id: 3,
+    title: "Entretenimiento",
+    path: "/#entertainment-section",
+    icon: BookOpen,
+  },
+  {
+    id: 4,
+    title: "Deportes",
+    path: "/#sports-section",
+    icon: Trophy,
+  },
+  {
+    id: 5,
+    title: "Misterio",
+    path: "/#mistery-section",
+    icon: FileQuestionMark,
+  },
+  {
+    id: 6,
+    title: "Más Tópicos",
+    path: "/#topics-section",
+    icon: Menu,
+  },
+  {
+    id: 7,
+    title: "Quiénes Somos",
+    path: "/about",
+    icon: User,
+  },
+];
+---
+
+<header
+  class="w-full border-b border-secondary/50 bg-primary sticky top-0 z-50"
+>
+  <div
+    class="max-w-6xl md:max-w-7xl lg:max-w-375 mx-auto px-4 md:px-8 h-16 flex items-center justify-between"
+  >
+    <a
+      href="/"
+      class="flex items-center gap-2.5 font-bold text-lg text-secondary hover:text-tertiary transition-colors"
+    >
+      <div
+        class="w-9 h-9 rounded-xl bg-linear-to-tr from-primary to-tertiary flex items-center justify-center text-white shadow-md shadow-indigo-500/20"
+      >
+        <Globe class="w-5 h-5" />
+      </div>
+      <span
+        >El Vértice <span class="text-secondary font-normal">Global</span></span
+      >
+    </a>
+
+    <!-- BOTÓN HAMBURGUESA (Móvil / Tablet: visible hasta lg) -->
+    <button
+      id="hamburger-btn"
+      type="button"
+      aria-label="Abrir menú de navegación"
+      class="lg:hidden p-2 rounded-xl text-secondary hover:text-tertiary hover:bg-quinary/30 transition-colors focus:outline-none"
+    >
+      <Menu class="w-6 h-6" />
+    </button>
+
+    <!-- MENÚ DESKTOP (visible a partir de lg) -->
+    <div class="hidden lg:flex items-center gap-5">
+      <nav class="flex items-center gap-6 text-sm font-medium text-slate-300">
+        {
+          links.map((link) => (
+            <a
+              href={`${link.path}`}
+              class={`hover:text-tertiary text-secondary transition-colors flex items-center gap-1.5 ${link.path === "/about" ? "bg-quinary  px-2 py-1 rounded-md" : ""}`}
+            >
+              <link.icon class="w-4 h-4 text-indigo-400" />
+              {link.title}
+            </a>
+          ))
+        }
+      </nav>
+    </div>
+  </div>
+
+  <!-- HAMBURGER MENU DRAWER (Desplazamiento de Izquierda a Derecha) -->
+  <div
+    id="mobile-menu-container"
+    class="fixed inset-0 z-50 pointer-events-none lg:hidden"
+    aria-hidden="true"
+  >
+    <!-- Fondo translúcido (Backdrop) -->
+    <div
+      id="mobile-backdrop"
+      class="fixed inset-0 bg-black/70 backdrop-blur-xs opacity-0 transition-opacity duration-300 ease-in-out pointer-events-none"
+    >
+    </div>
+
+    <!-- Panel lateral deslizante (Drawer) -->
+    <aside
+      id="mobile-drawer"
+      class="fixed top-0 left-0 bottom-0 w-72 sm:w-80 bg-primary border-r border-secondary/30 shadow-2xl flex flex-col justify-between p-6 -translate-x-full transition-transform duration-300 ease-in-out pointer-events-auto overflow-y-auto"
+    >
+      <div class="space-y-6">
+        <!-- Encabezado del menú móvil -->
+        <div class="flex items-center justify-between pb-4 border-b border-secondary/20">
+          <a
+            href="/"
+            class="flex items-center gap-2 font-bold text-base text-secondary hover:text-tertiary transition-colors"
+          >
+            <div
+              class="w-8 h-8 rounded-lg bg-linear-to-tr from-primary to-tertiary flex items-center justify-center text-white"
+            >
+              <Globe class="w-4 h-4" />
+            </div>
+            <span
+              >El Vértice <span class="text-secondary font-normal">Global</span></span
+            >
+          </a>
+
+          <button
+            id="close-drawer-btn"
+            type="button"
+            aria-label="Cerrar menú"
+            class="p-2 rounded-lg text-secondary/70 hover:text-tertiary hover:bg-quinary/40 transition-colors"
+          >
+            <X class="w-5 h-5" />
+          </button>
+        </div>
+
+        <!-- Enlaces de navegación con iconos -->
+        <nav class="flex flex-col gap-1.5">
+          {
+            links.map((link) => (
+              <a
+                href={`${link.path}`}
+                class={`hover:text-tertiary text-secondary transition-colors flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-white/5 ${
+                  link.path === "/about" ? "bg-quinary  px-2 py-1 rounded-md" : ""
+                }`}
+              >
+                <link.icon class="w-5 h-5 text-indigo-400 shrink-0" />
+                <span>{link.title}</span>
+              </a>
+            ))
+          }
+        </nav>
+      </div>
+
+      <!-- Pie del menú móvil -->
+      <div class="pt-6 border-t border-secondary/20 flex flex-col gap-2 text-xs text-secondary/60">
+        <p class="font-semibold text-secondary">El Vértice Global</p>
+        <p>Periodismo independiente y cobertura en tiempo real.</p>
+      </div>
+    </aside>
+  </div>
+</header>
+
+<script>
+  const hamburgerBtn = document.getElementById("hamburger-btn");
+  const closeDrawerBtn = document.getElementById("close-drawer-btn");
+  const mobileContainer = document.getElementById("mobile-menu-container");
+  const mobileBackdrop = document.getElementById("mobile-backdrop");
+  const mobileDrawer = document.getElementById("mobile-drawer");
+  const mobileLinks = mobileDrawer?.querySelectorAll("a");
+
+  function openMenu() {
+    if (!mobileContainer || !mobileBackdrop || !mobileDrawer) return;
+    mobileContainer.classList.remove("pointer-events-none");
+    mobileContainer.setAttribute("aria-hidden", "false");
+    mobileBackdrop.classList.remove("pointer-events-none", "opacity-0");
+    mobileBackdrop.classList.add("opacity-100");
+    mobileDrawer.classList.remove("-translate-x-full");
+    mobileDrawer.classList.add("translate-x-0");
+    document.body.style.overflow = "hidden";
+  }
+
+  function closeMenu() {
+    if (!mobileContainer || !mobileBackdrop || !mobileDrawer) return;
+    mobileBackdrop.classList.remove("opacity-100");
+    mobileBackdrop.classList.add("opacity-0", "pointer-events-none");
+    mobileDrawer.classList.remove("translate-x-0");
+    mobileDrawer.classList.add("-translate-x-full");
+    mobileContainer.classList.add("pointer-events-none");
+    mobileContainer.setAttribute("aria-hidden", "true");
+    document.body.style.overflow = "";
+  }
+
+  hamburgerBtn?.addEventListener("click", openMenu);
+  closeDrawerBtn?.addEventListener("click", closeMenu);
+  mobileBackdrop?.addEventListener("click", closeMenu);
+
+  mobileLinks?.forEach((link) => {
+    link.addEventListener("click", closeMenu);
+  });
+</script>

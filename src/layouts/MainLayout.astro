@@ -1,0 +1,50 @@
+---
+/**
+ * ¿Qué cosas se pueden agregar aquí (src/layouts/)?
+ *
+ * Plantillas estructurales y esqueletos reutilizables de página:
+ * 1. Plantilla principal base (MainLayout.astro): HTML raíz, tags <head>, metadatos SEO, Open Graph y favicon.
+ * 2. Layouts específicos por sección:
+ *    - BlogLayout.astro (con barra lateral, índice de contenidos TOC, fecha y autor).
+ *    - DocsLayout.astro (con menú lateral de navegación jerárquica y buscador).
+ *    - AuthLayout.astro (centrado, sin cabecera completa, ideal para login/registro).
+ * 3. Inyección de estilos globales (import '../styles/global.css') y scripts de analíticas (Google Analytics, Plausible).
+ * 4. Slots flexibles:
+ *    - `<slot />` principal para el cuerpo de la página.
+ *    - Slots con nombre: `<slot name="sidebar" />`, `<slot name="footer" />`.
+ * 5. View Transitions de Astro (<ClientRouter />) para navegación fluida tipo SPA sin recarga total.
+ */
+import "../styles/global.css";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import SEO from "../components/SEO.astro";
+import type { SEOProps } from "../config/seo";
+
+interface Props extends SEOProps {
+  // Propiedades opcionales adicionales específicas del layout
+  showFooter?: boolean;
+}
+
+const { showFooter = true, ...seoProps } = Astro.props;
+---
+
+<!doctype html>
+<html
+  lang={seoProps.locale || "es"}
+  class="h-full bg-secondary text-slate-100 antialiased"
+>
+  <head>
+    <!-- Componente SEO universal configurable: Meta tags, OG, Twitter, JSON-LD Schemas -->
+    <SEO {...seoProps} />
+    <slot name="head" />
+  </head>
+  <body class="min-h-full selection:bg-indigo-500 selection:text-white">
+    <Header />
+
+    <main class="">
+      <slot />
+    </main>
+
+    {showFooter && <Footer />}
+  </body>
+</html>

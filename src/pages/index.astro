@@ -1,0 +1,957 @@
+---
+import MainLayout from "../layouts/MainLayout.astro";
+import SwiperComponent from "../components/swiper/SwiperComponent.astro";
+import type { SwiperI } from "../components/swiper/swiperType";
+import { SwiperSlide } from "astro-swiper";
+import {
+  Trophy,
+  BookOpen,
+  Computer,
+  Mic2,
+  FileQuestionMark,
+  Calendar,
+  Newspaper,
+  FlaskConical,
+  HeartPulse,
+  ChartNoAxesCombined,
+  Plane,
+  Landmark,
+  Utensils,
+  Pencil,
+  User,
+  Mail,
+  ArrowRight,
+} from "lucide-astro";
+import { Image } from "astro:assets";
+import heroImage from "../assets/images/heroImage.png";
+import { getCollection } from "astro:content";
+import NewsCardNormal from "../components/NewsCardNormal.astro";
+import NewsCardMedium from "../components/NewsCardMedium.astro";
+import NewsCardSmall from "../components/NewsCardSmall.astro";
+
+const toolsSwiperOptions = {
+  slidesPerView: 1,
+  spaceBetween: 10,
+  loop: true,
+  autoplay: {
+    delay: 1500,
+    disableOnInteraction: false,
+    pauseOnMouseEnter: true,
+  },
+  breakpoints: {
+    450: {
+      // sm
+      slidesPerView: 1,
+      spaceBetween: 10,
+    },
+    // 540: {
+    //     // sm
+    //     slidesPerView: 4,
+    //     spaceBetween: 10,
+    // },
+    640: {
+      // sm
+      slidesPerView: 2,
+      spaceBetween: 10,
+    },
+    768: {
+      // md
+      slidesPerView: 3,
+      spaceBetween: 24,
+    },
+    // 860: {
+    //   // sm
+    //   slidesPerView: 4,
+    //   spaceBetween: 10,
+    // },
+    1024: {
+      // lg
+      slidesPerView: 4,
+      spaceBetween: 25,
+    },
+    1280: {
+      // xl
+      slidesPerView: 5,
+      spaceBetween: 25,
+    },
+    // 1536: {
+    //     // 2xl
+    //     slidesPerView: 5,
+    //     spaceBetween: 48,
+    // },
+  },
+} as SwiperI;
+
+const cardsSwiperOptions = {
+  slidesPerView: 1,
+  spaceBetween: 10,
+  direction: "horizontal",
+  loop: true,
+  autoplay: {
+    delay: 1500,
+    disableOnInteraction: false,
+    pauseOnMouseEnter: true,
+  },
+  // breakpoints: {
+  //   450: {
+  //     // sm
+  //     slidesPerView: 1,
+  //     spaceBetween: 10,
+  //   },
+  //   // 540: {
+  //   //     // sm
+  //   //     slidesPerView: 4,
+  //   //     spaceBetween: 10,
+  //   // },
+  //   640: {
+  //     // sm
+  //     slidesPerView: 2,
+  //     spaceBetween: 10,
+  //   },
+  //   768: {
+  //     // md
+  //     slidesPerView: 3,
+  //     spaceBetween: 24,
+  //   },
+  //   // 860: {
+  //   //   // sm
+  //   //   slidesPerView: 4,
+  //   //   spaceBetween: 10,
+  //   // },
+  //   1024: {
+  //     // lg
+  //     slidesPerView: 4,
+  //     spaceBetween: 25,
+  //   },
+  //   1280: {
+  //     // xl
+  //     slidesPerView: 5,
+  //     spaceBetween: 25,
+  //   },
+  //   // 1536: {
+  //   //     // 2xl
+  //   //     slidesPerView: 5,
+  //   //     spaceBetween: 48,
+  //   // },
+  // },
+} as SwiperI;
+
+// Ejemplos extraídos de architectures.md para la arquitectura básica
+type topics =
+  | "tecnologia"
+  | "entretenimiento"
+  | "deportes"
+  | "misterio"
+  | "farandula"
+  | "ciencia"
+  | "salud"
+  | "economia"
+  | "viajes"
+  | "cultura"
+  | "gastronomia";
+
+interface Topic {
+  id: string;
+  title: string;
+  topic: topics;
+  path: string;
+  icon: any;
+}
+
+const topics: Topic[] = [
+  {
+    id: "topic-0",
+    title: "Tecnología",
+    topic: "tecnologia",
+    path: "#technology-section",
+    icon: Computer,
+  },
+  {
+    id: "topic-1",
+    title: "Entretenimiento",
+    topic: "entretenimiento",
+    path: "#entertainment-section",
+    icon: BookOpen,
+  },
+  {
+    id: "topic-2",
+    title: "Deportes",
+    topic: "deportes",
+    path: "#sports-section",
+    icon: Trophy,
+  },
+  {
+    id: "topic-3",
+    title: "Misterio",
+    topic: "misterio",
+    path: "#mistery-section",
+    icon: FileQuestionMark,
+  },
+  {
+    id: "topic-4",
+    title: "Farandula",
+    topic: "farandula",
+    path: "#show-section",
+    icon: Mic2,
+  },
+  {
+    id: "topic-5",
+    title: "Ciencia",
+    topic: "ciencia",
+    path: "#science-section",
+    icon: FlaskConical,
+  },
+  {
+    id: "topic-6",
+    title: "Salud",
+    topic: "salud",
+    path: "#health-section",
+    icon: HeartPulse,
+  },
+  {
+    id: "topic-7",
+    title: "Economía",
+    topic: "economia",
+    path: "#economy-section",
+    icon: ChartNoAxesCombined,
+  },
+  {
+    id: "topic-8",
+    title: "Viajes",
+    topic: "viajes",
+    path: "#travel-section",
+    icon: Plane,
+  },
+  {
+    id: "topic-9",
+    title: "Cultura",
+    topic: "cultura",
+    path: "#culture-section",
+    icon: Landmark,
+  },
+  {
+    id: "topic-10",
+    title: "Gastronomía",
+    topic: "gastronomia",
+    path: "#food-section",
+    icon: Utensils,
+  },
+];
+
+const allNews = await getCollection("news"); // trae todos las news
+
+const getNewsByTopic = (topic: topics) =>
+  allNews.filter((news) => news.data.topic === topic);
+
+const newsTechnology = getNewsByTopic("tecnologia");
+const newsEntertainment = getNewsByTopic("entretenimiento");
+const newsSports = getNewsByTopic("deportes");
+const newsMystery = getNewsByTopic("misterio");
+const newsShow = getNewsByTopic("farandula");
+const newsScience = getNewsByTopic("ciencia");
+const newsHealth = getNewsByTopic("salud");
+const newsEconomy = getNewsByTopic("economia");
+const newsTravel = getNewsByTopic("viajes");
+const newsCulture = getNewsByTopic("cultura");
+const newsFood = getNewsByTopic("gastronomia");
+
+const topNews = allNews.filter((news) => news.data.isTop);
+const firstTop = topNews[0];
+
+const recentNews = [
+  newsTechnology[0],
+  newsEntertainment[0],
+  newsSports[0],
+  newsMystery[0],
+  newsShow[0],
+  newsScience[0],
+  newsHealth[0],
+  newsEconomy[0],
+  // newsTravel[0],
+  // newsCulture[0],
+  // newsFood[0],
+];
+
+// export async function getStaticPaths() {
+//   const news = await getCollection("news");
+//   console.log(news);
+//   return news.map(new => ({
+//     params: { slug: new.id },
+//     props: { new },
+//   }));
+// }
+---
+
+<MainLayout
+  title="Inicio - Plantilla de Arquitectura Rápida"
+  description="Estructura base para proyectos sencillos con Astro, Tailwind CSS, Zod y React."
+  keywords={[
+    "astro",
+    "template",
+    "tailwind",
+    "react",
+    "seo",
+    "zod",
+    "content-collections",
+  ]}
+  ogType="website"
+>
+  <!-- HERO SECTION -->
+  <section class="w-full min-h-screen max-h-screen overflow-hidden relative">
+    <Image
+      src={heroImage}
+      alt="Hero Image"
+      class="w-full h-full object-cover absolute"
+    />
+
+    <div
+      class="absolute inset-0 bg-linear-to-r from-primary via-quinary/50 to-transparent flex items-center px-10"
+    >
+      <div class="flex flex-col gap-4">
+        <h1
+          class="text-4xl md:text-5xl lg:text-6xl font-bold text-white italic"
+        >
+          El Vértice Global
+        </h1>
+
+        <p class="text-lg text-white">
+          Explorando el mundo desde diversos tópicos y puntos de vista. <br />
+          Mantente informado de lo que pasa a diario con las noticias más virales
+          y relevantes del momento.
+        </p>
+
+        <a
+          href="#recent-news"
+          class="flex gap-3 mt-5 w-fit text-xl bg-tertiary text-quinary rounded-lg py-3 px-5 font-extrabold hover:cursor-pointer hover:bg-quaternary transition-all duration-300 italic"
+        >
+          <Calendar />
+          Lo más reciente
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <article class="bg-secondary pt-7">
+    <p class="titles-section text-quinary text-center!">Lo último de hoy</p>
+    <div class="w-[80%] xl:w-[75%] md:max-w-300 mx-auto relative min-h-[50vh]">
+      <figure class="rounded-xl overflow-hidden">
+        <img
+          src={firstTop.data.image?.startsWith("http")
+            ? firstTop.data.image
+            : `src/${firstTop.data.image}`}
+          alt="First Top News Image"
+          class="w-full h-full object-cover absolute"
+        />
+      </figure>
+      <div class="absolute bottom-20 left-0 bg-tertiary/80 py-2 px-4">
+        <a
+          href={`/news/${firstTop.data.slug}`}
+          class="text-lg md:text-2xl lg:text-5xl block w-[80%] mx-auto font-bold text-secondary italic hover:cursor-pointer hover:underline transition-colors duration-300"
+        >
+          {firstTop.data.title}
+        </a>
+
+        <p class="text-sm md:text-xl text-white w-[80%] mx-auto mt-3">
+          {firstTop.data.description}
+        </p>
+      </div>
+    </div>
+    <div
+      class="text-primary w-[80%] xl:w-[75%] md:max-w-300 mx-auto flex flex-col gap-3 items-center mt-4"
+    >
+      <p class="text-lg font-bold italic flex gap-2">
+        <User class="text-quaternary" />
+        {firstTop.data.author}
+      </p>
+      <p class="text-lg font-bold italic flex gap-2">
+        <Calendar class="text-quaternary" />
+        {
+          new Intl.DateTimeFormat("es-ES", {
+            day: "2-digit",
+            month: "long",
+            year: "numeric",
+          }).format(new Date(firstTop.data.pubDate))
+        }
+      </p>
+    </div>
+  </article>
+
+  <!-- BANNER SECTION -->
+  <section
+    class="flex flex-col md:flex-row items-center gap-6 bg-secondary section-padding py-7 min-h-[40vh]"
+  >
+    <div class="h-90 lg:h-70 overflow-hidden md:w-[50%] lg:w-[40%]">
+      <Image
+        src={heroImage}
+        alt="Banner Image"
+        class="w-full h-full object-cover"
+      />
+    </div>
+    <div class="space-y-3 md:w-[50%] lg:w-[60%]">
+      <h3 class="text-primary font-bold text-2xl">
+        Bienvenido a <strong class="italic">El Vértice Global</strong>
+      </h3>
+      <p class="text-base text-quinary md:w-[80%] text-center md:text-start">
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Laudantium
+        doloribus dignissimos suscipit repudiandae possimus recusandae at non
+        rem! Placeat natus quidem impedit officiis vel molestias ipsa. Doloribus
+        beatae eum dicta omnis esse, ad soluta neque ducimus voluptatum
+        voluptates numquam quo nobis recusandae labore facilis at ea fuga natus,
+        dolor illum non quaerat possimus exercitationem nihil.
+      </p>
+      <a
+        href="#newsletter-section"
+        class="cursor-pointer w-fit flex gap-2 rounded-lg bg-quinary text-secondary hover:bg-primary px-4 py-2.5 font-bold mx-auto md:mx-0 italic"
+      >
+        <Newspaper class="w-5 h-5" />
+        Suscribirme
+      </a>
+    </div>
+  </section>
+
+  <!-- TOPICS SECTION -->
+  <section class="section-padding bg-secondary min-h-80" id="topics-section">
+    <h2 class="titles-section text-quinary">Tópicos</h2>
+
+    <SwiperComponent
+      optionsSwiper={toolsSwiperOptions}
+      classSwiperUser={`w-[80%] xl:w-full mx-auto px-5`}
+      classSwiperWrapperUser="pb-[45px]"
+      paginationUser={true}
+    >
+      <!-- <div class="flex gap-7 w-[70%] mx-auto"> -->
+      {
+        topics.map((topic) => (
+          <SwiperSlide class="">
+            {/* bg-linear-to-r from-secndary to-indigo-400 */}
+            <div class="text-fit rounded-2xl shadow-md/50 shadow-quinary px-4 py-3 hover:shadow-tertiary transition-all duration-300  ">
+              <a href={topic.path} class="  flex flex-col items-center gap-3 ">
+                <span class="rounded-full bg-linear-to-tr from-transparent to-tertiary p-2">
+                  <topic.icon class="w-7 h-7 text-indigo-500 " />
+                </span>
+                <p class="text-xl text-quinary font-bold">{topic.title}</p>
+              </a>
+            </div>
+          </SwiperSlide>
+        ))
+      }
+      <!-- </div> -->
+    </SwiperComponent>
+  </section>
+
+  <!-- RECENT NEWS SECTION -->
+  <section class="section-padding py-4 bg-quinary min-h-80" id="recent-news">
+    <h2 class="titles-section text-secondary">Lo más reciente</h2>
+
+    <div
+      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 pb-10 max-w-390 mx-auto"
+    >
+      {recentNews.map((article) => <NewsCardNormal article={article} />)}
+    </div>
+  </section>
+
+  <!-- TECHNOLOGIE NEWS SECTION -->
+  <section class="section-padding bg-secondary" id="technology-section">
+    <div class="flex items-center justify-between w-full">
+      <h2 class="titles-section text-quinary">Tecnología</h2>
+      <a
+        href="topics/tecnologia"
+        class="text-xl text-secondary flex items-center gap-1 font-bold bg-primary px-4 py-2 rounded-2xl hover:bg-quaternary/80 transition-all duration-300"
+        >Ver más <ArrowRight class="text-secondary font-bold" />
+      </a>
+    </div>
+
+    <div class="xl:max-w-400 mx-auto">
+      <!--  SECTION TOP -->
+      <div
+        class="grid grid-cols-1 md:grid-cols-2 items-center gap-8 pb-10 mx-auto"
+      >
+        <div class="w-full mx-auto lg:max-w-none">
+          <SwiperComponent
+            optionsSwiper={cardsSwiperOptions}
+            classSwiperUser={`w-full mx-auto`}
+            classSwiperWrapperUser="pb-[40px]"
+            paginationUser={true}
+          >
+            {
+              newsTechnology.slice(0, 2).map((article) => (
+                <SwiperSlide class="">
+                  <NewsCardNormal article={article} />
+                </SwiperSlide>
+              ))
+            }
+          </SwiperComponent>
+        </div>
+
+        <div class="flex flex-col xl:flex-row xl:flex-wrap gap-4 w-full">
+          {
+            newsTechnology
+              .slice(2, 5)
+              .map((article) => <NewsCardMedium article={article} />)
+          }
+        </div>
+      </div>
+      <!-- SECTION BOTTOM -->
+      <div class="flex flex-wrap md:flex-nowrap gap-4 lg:w-[80%] mx-auto">
+        {
+          newsTechnology
+            .slice(3, 6)
+            .map((article) => <NewsCardSmall article={article} />)
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- NEWSLETTER -->
+  <section
+    id="newsletter-section"
+    class="bg-black text-secondary py-10 px-5 max-h-[300px] flex items-center justify-center relative overflow-hidden border-y border-quinary/25 shadow-inner"
+  >
+    <!-- Brillo sutil de fondo -->
+    <div
+      class="absolute -top-20 -left-20 w-60 h-60 rounded-full bg-tertiary/10 blur-3xl pointer-events-none"
+    >
+    </div>
+    <div
+      class="absolute -bottom-20 -right-20 w-60 h-60 rounded-full bg-quaternary/15 blur-3xl pointer-events-none"
+    >
+    </div>
+
+    <div
+      class="w-full max-w-xl mx-auto flex flex-col items-center text-center gap-3 relative z-10"
+    >
+      <h2
+        class="text-3xl md:text-4xl font-extrabold text-tertiary tracking-tight italic"
+      >
+        Newsletter
+      </h2>
+      <p
+        class="text-xs sm:text-sm text-secondary/80 max-w-md leading-relaxed font-normal"
+      >
+        Recibe a primera hora las noticias más destacadas, primicias y análisis
+        de actualidad directamente en tu bandeja de entrada.
+      </p>
+
+      <form
+        class="w-full max-w-md flex flex-col sm:flex-row items-center gap-2.5 mt-1"
+        onsubmit="event.preventDefault();"
+      >
+        <div class="relative w-full">
+          <div
+            class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-tertiary/70"
+          >
+            <Mail class="w-4 h-4" />
+          </div>
+          <input
+            type="email"
+            placeholder="Ingresa tu correo electrónico..."
+            required
+            class="w-full pl-10 pr-4 py-2.5 rounded-lg bg-primary/80 border border-quinary/50 text-secondary placeholder:text-secondary/45 text-sm focus:outline-hidden focus:border-tertiary transition-colors"
+          />
+        </div>
+
+        <button
+          type="submit"
+          class="w-full sm:w-auto px-6 py-2.5 rounded-lg bg-quaternary hover:bg-tertiary text-white font-bold text-sm tracking-wide transition-all duration-300 shadow-md hover:shadow-lg shrink-0 cursor-pointer italic"
+        >
+          Suscribirme
+        </button>
+      </form>
+    </div>
+  </section>
+
+  <!-- ENTERTEIMENT NEWS SECTION -->
+  <section class="section-padding bg-quinary" id="entertainment-section">
+    <div class="flex items-center justify-between w-full">
+      <h2 class="titles-section text-secondary">Entretenimiento</h2>
+      <a
+        href="topics/entretenimiento"
+        class="text-xl text-secondary flex items-center gap-1 font-bold bg-primary px-4 py-2 rounded-2xl hover:bg-quaternary/80 transition-all duration-300"
+        >Ver más <ArrowRight class="text-secondary font-bold" />
+      </a>
+    </div>
+
+    <div class="xl:max-w-400 mx-auto">
+      <!--  SECTION TOP -->
+      <div class="mb-3 grid grid-cols-1 md:grid-cols-2 items-center gap-4">
+        <div class="flex flex-col gap-4 mx-auto">
+          {
+            newsEntertainment
+              .slice(1, 3)
+              .map((article) => <NewsCardMedium article={article} />)
+          }
+        </div>
+        {
+          newsEntertainment
+            .slice(0, 1)
+            .map((article) => <NewsCardNormal article={article} />)
+        }
+      </div>
+
+      <!-- SECTION BOTTOM -->
+      <div
+        class="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 mx-auto lg:max-w-none"
+      >
+        {
+          newsEntertainment
+            .slice(0, 4)
+            .map((article) => <NewsCardSmall article={article} />)
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- SPORTS NEWS SECTION -->
+  <section class="section-padding bg-secondary" id="sports-section">
+    <div class="flex items-center justify-between w-full">
+      <h2 class="titles-section text-quinary">Deportes</h2>
+      <a
+        href="topics/deportes"
+        class="text-xl text-secondary flex items-center gap-1 font-bold bg-primary px-4 py-2 rounded-2xl hover:bg-quaternary/80 transition-all duration-300"
+        >Ver más <ArrowRight class="text-secondary font-bold" />
+      </a>
+    </div>
+
+    <div class="xl:max-w-400 mx-auto">
+      <!--  SECTION TOP -->
+      <div
+        class="grid grid-cols-1 md:grid-cols-2 items-center gap-8 pb-10 mx-auto"
+      >
+        <div class="flex flex-col xl:flex-row xl:flex-wrap gap-4 w-full">
+          {
+            newsSports
+              .slice(2, 5)
+              .map((article) => <NewsCardMedium article={article} />)
+          }
+        </div>
+        <div class="w-full mx-auto lg:max-w-none">
+          <SwiperComponent
+            optionsSwiper={cardsSwiperOptions}
+            classSwiperUser={`w-full mx-auto`}
+            classSwiperWrapperUser="pb-[40px]"
+            paginationUser={true}
+          >
+            {
+              newsSports.slice(0, 2).map((article) => (
+                <SwiperSlide class="">
+                  <NewsCardNormal article={article} />
+                </SwiperSlide>
+              ))
+            }
+          </SwiperComponent>
+        </div>
+      </div>
+      <!-- SECTION BOTTOM -->
+      <div class="flex flex-wrap md:flex-nowrap gap-4 lg:w-[80%] mx-auto">
+        {
+          newsSports
+            .slice(3, 6)
+            .map((article) => <NewsCardSmall article={article} />)
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- SCIENCE NEWS SECTION -->
+  <section class="section-padding bg-quinary" id="science-section">
+    <div class="flex items-center justify-between w-full">
+      <h2 class="titles-section text-secondary">Ciencia</h2>
+      <a
+        href="topics/ciencia"
+        class="text-xl text-secondary flex items-center gap-1 font-bold bg-primary px-4 py-2 rounded-2xl hover:bg-quaternary/80 transition-all duration-300"
+        >Ver más <ArrowRight class="text-secondary font-bold" />
+      </a>
+    </div>
+
+    <!--  SECTION TOP -->
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-3 xl:max-w-400 mx-auto">
+      {
+        newsScience
+          .slice(0, 6)
+          .map((article) => <NewsCardMedium article={article} />)
+      }
+    </div>
+  </section>
+
+  <!-- GASTRONOMY NEWS SECTION -->
+  <section class="section-padding bg-secondary" id="gastronomy-section">
+    <div class="flex items-center justify-between w-full">
+      <h2 class="titles-section text-quinary">Gastronomía</h2>
+      <a
+        href="topics/gastronomia"
+        class="text-xl text-secondary flex items-center gap-1 font-bold bg-primary px-4 py-2 rounded-2xl hover:bg-quaternary/80 transition-all duration-300"
+        >Ver más <ArrowRight class="text-secondary font-bold" />
+      </a>
+    </div>
+
+    <div class="xl:max-w-400 mx-auto">
+      <!--  SECTION TOP -->
+      <div
+        class="grid grid-cols-1 md:grid-cols-2 items-center gap-8 pb-10 mx-auto"
+      >
+        <div class="w-full mx-auto lg:max-w-none">
+          <SwiperComponent
+            optionsSwiper={cardsSwiperOptions}
+            classSwiperUser={`w-full mx-auto`}
+            classSwiperWrapperUser="pb-[40px]"
+            paginationUser={true}
+          >
+            {
+              newsFood.slice(0, 2).map((article) => (
+                <SwiperSlide class="">
+                  <NewsCardNormal article={article} />
+                </SwiperSlide>
+              ))
+            }
+          </SwiperComponent>
+        </div>
+
+        <div class="flex flex-col xl:flex-row xl:flex-wrap gap-4 w-full">
+          {
+            newsFood
+              .slice(2, 5)
+              .map((article) => <NewsCardMedium article={article} />)
+          }
+        </div>
+      </div>
+      <!-- SECTION BOTTOM -->
+      <div class="flex flex-wrap md:flex-nowrap gap-4 lg:w-[80%] mx-auto">
+        {
+          newsFood
+            .slice(3, 6)
+            .map((article) => <NewsCardSmall article={article} />)
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- TRAVEL NEWS SECTION -->
+  <section class="section-padding bg-quinary" id="travel-section">
+    <div class="flex items-center justify-between w-full">
+      <h2 class="titles-section text-secondary">Viajes</h2>
+      <a
+        href="topics/viajes"
+        class="text-xl text-secondary flex items-center gap-1 font-bold bg-primary px-4 py-2 rounded-2xl hover:bg-quaternary/80 transition-all duration-300"
+        >Ver más <ArrowRight class="text-secondary font-bold" />
+      </a>
+    </div>
+
+    <div class="xl:max-w-400 mx-auto">
+      <!--  SECTION TOP -->
+      <div class="mb-3 grid grid-cols-1 md:grid-cols-2 items-center gap-4">
+        <div class="flex flex-col gap-4 mx-auto">
+          {
+            newsTravel
+              .slice(1, 3)
+              .map((article) => <NewsCardMedium article={article} />)
+          }
+        </div>
+        {
+          newsTravel
+            .slice(0, 1)
+            .map((article) => <NewsCardNormal article={article} />)
+        }
+      </div>
+
+      <!-- SECTION BOTTOM -->
+      <div
+        class="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 mx-auto lg:max-w-none"
+      >
+        {
+          newsTravel
+            .slice(0, 4)
+            .map((article) => <NewsCardSmall article={article} />)
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- SHOW NEWS SECTION -->
+  <section class="section-padding bg-secondary" id="show-section">
+    <div class="flex items-center justify-between w-full">
+      <h2 class="titles-section text-quinary">Espectáculos</h2>
+      <a
+        href="topics/farandula"
+        class="text-xl text-secondary flex items-center gap-1 font-bold bg-primary px-4 py-2 rounded-2xl hover:bg-quaternary/80 transition-all duration-300"
+        >Ver más <ArrowRight class="text-secondary font-bold" />
+      </a>
+    </div>
+
+    <!--  SECTION TOP -->
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-3 xl:max-w-400 mx-auto">
+      {
+        newsShow
+          .slice(0, 6)
+          .map((article) => <NewsCardMedium article={article} />)
+      }
+    </div>
+  </section>
+
+  <!-- MISTERY NEWS SECTION -->
+  <section class="section-padding bg-quinary" id="mistery-section">
+    <div class="flex items-center justify-between w-full">
+      <h2 class="titles-section text-secondary">Misterio</h2>
+      <a
+        href="topics/misterio"
+        class="text-xl text-secondary flex items-center gap-1 font-bold bg-primary px-4 py-2 rounded-2xl hover:bg-quaternary/80 transition-all duration-300"
+        >Ver más <ArrowRight class="text-secondary font-bold" />
+      </a>
+    </div>
+
+    <div class="xl:max-w-400 mx-auto">
+      <!--  SECTION TOP -->
+      <div class="mb-3 grid grid-cols-1 md:grid-cols-2 items-center gap-4">
+        <div class="flex flex-col gap-4 mx-auto">
+          {
+            newsMystery
+              .slice(1, 3)
+              .map((article) => <NewsCardMedium article={article} />)
+          }
+        </div>
+        {
+          newsMystery
+            .slice(0, 1)
+            .map((article) => <NewsCardNormal article={article} />)
+        }
+      </div>
+
+      <!-- SECTION BOTTOM -->
+      <div
+        class="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 mx-auto lg:max-w-none"
+      >
+        {
+          newsMystery
+            .slice(0, 4)
+            .map((article) => <NewsCardSmall article={article} />)
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ECONOMY NEWS SECTION -->
+  <section class="section-padding bg-secondary" id="economy-section">
+    <div class="flex items-center justify-between w-full">
+      <h2 class="titles-section text-quinary">Economía</h2>
+      <a
+        href="topics/economia"
+        class="text-xl text-secondary flex items-center gap-1 font-bold bg-primary px-4 py-2 rounded-2xl hover:bg-quaternary/80 transition-all duration-300"
+        >Ver más <ArrowRight class="text-secondary font-bold" />
+      </a>
+    </div>
+
+    <div class="xl:max-w-400 mx-auto">
+      <!--  SECTION TOP -->
+      <div
+        class="grid grid-cols-1 md:grid-cols-2 items-center gap-8 pb-10 mx-auto"
+      >
+        <div class="w-full mx-auto lg:max-w-none">
+          <SwiperComponent
+            optionsSwiper={cardsSwiperOptions}
+            classSwiperUser={`w-full mx-auto`}
+            classSwiperWrapperUser="pb-[40px]"
+            paginationUser={true}
+          >
+            {
+              newsEconomy.slice(0, 2).map((article) => (
+                <SwiperSlide class="">
+                  <NewsCardNormal article={article} />
+                </SwiperSlide>
+              ))
+            }
+          </SwiperComponent>
+        </div>
+
+        <div class="flex flex-col xl:flex-row xl:flex-wrap gap-4 w-full">
+          {
+            newsEconomy
+              .slice(2, 5)
+              .map((article) => <NewsCardMedium article={article} />)
+          }
+        </div>
+      </div>
+      <!-- SECTION BOTTOM -->
+      <div class="flex flex-wrap md:flex-nowrap gap-4 lg:w-[80%] mx-auto">
+        {
+          newsEconomy
+            .slice(3, 6)
+            .map((article) => <NewsCardSmall article={article} />)
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- HEALTH NEWS SECTION -->
+  <section class="section-padding bg-quinary" id="health-section">
+    <div class="flex items-center justify-between w-full">
+      <h2 class="titles-section text-secondary">Salud</h2>
+      <a
+        href="topics/salud"
+        class="text-xl text-secondary flex items-center gap-1 font-bold bg-primary px-4 py-2 rounded-2xl hover:bg-quaternary/80 transition-all duration-300"
+        >Ver más <ArrowRight class="text-secondary font-bold" />
+      </a>
+    </div>
+
+    <!--  SECTION TOP -->
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-3 xl:max-w-400 mx-auto">
+      {
+        newsHealth
+          .slice(0, 6)
+          .map((article) => <NewsCardMedium article={article} />)
+      }
+    </div>
+  </section>
+
+  <!-- CULTURE NEWS SECTION -->
+  <section class="section-padding bg-secondary" id="culture-section">
+    <div class="flex items-center justify-between w-full">
+      <h2 class="titles-section text-quinary">Cultura</h2>
+      <a
+        href="topics/cultura"
+        class="text-xl text-secondary flex items-center gap-1 font-bold bg-primary px-4 py-2 rounded-2xl hover:bg-quaternary/80 transition-all duration-300"
+        >Ver más <ArrowRight class="text-secondary font-bold" />
+      </a>
+    </div>
+
+    <div class="xl:max-w-400 mx-auto">
+      <!--  SECTION TOP -->
+      <div
+        class="grid grid-cols-1 md:grid-cols-2 items-center gap-8 pb-10 mx-auto"
+      >
+        <div class="flex flex-col xl:flex-row xl:flex-wrap gap-4 w-full">
+          {
+            newsCulture
+              .slice(2, 5)
+              .map((article) => <NewsCardMedium article={article} />)
+          }
+        </div>
+        <div class="w-full mx-auto lg:max-w-none">
+          <SwiperComponent
+            optionsSwiper={cardsSwiperOptions}
+            classSwiperUser={`w-full mx-auto`}
+            classSwiperWrapperUser="pb-[40px]"
+            paginationUser={true}
+          >
+            {
+              newsCulture.slice(0, 2).map((article) => (
+                <SwiperSlide class="">
+                  <NewsCardNormal article={article} />
+                </SwiperSlide>
+              ))
+            }
+          </SwiperComponent>
+        </div>
+      </div>
+      <!-- SECTION BOTTOM -->
+      <div class="flex flex-wrap md:flex-nowrap gap-4 lg:w-[80%] mx-auto">
+        {
+          newsCulture
+            .slice(3, 6)
+            .map((article) => <NewsCardSmall article={article} />)
+        }
+      </div>
+    </div>
+  </section>
+</MainLayout>

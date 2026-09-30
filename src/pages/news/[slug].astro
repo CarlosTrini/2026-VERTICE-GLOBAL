@@ -1,0 +1,355 @@
+---
+import MainLayout from "../../layouts/MainLayout.astro";
+import NewsCardSmall from "../../components/NewsCardSmall.astro";
+import NewsCardNormal from "../../components/NewsCardNormal.astro";
+import {
+    Calendar,
+    User,
+    Clock,
+    Share2,
+    Bookmark,
+    ArrowLeft,
+    Sparkles,
+    Quote,
+    CheckCircle2,
+    ChevronRight,
+    Flame,
+} from "lucide-astro";
+import { getCollection } from "astro:content";
+
+// ------------------------------------------------------------------------------------------------------------------------
+// ESTE ES PARA OBTENER EL ARTICULO PROPIO DEL SLUG
+// ------------------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------------------
+// Se ejecuta UNA vez en el build. Devuelve TODAS las rutas.
+export async function getStaticPaths() {
+    const news = await getCollection("news");
+
+    // Un objeto = una página a generar
+    return news.map((article) => ({
+        params: { slug: article.data.slug },
+        props: { article },
+    }));
+}
+
+// Esto se ejecuta UNA vez POR CADA página generada.
+// Cuando Astro renderiza /news/cultura-literatura-...,
+// aquí slug = "cultura-literatura-contemporanea-novelas"
+// const { slug } = Astro.params;
+const { article } = Astro.props; // ← el artículo que le pasaste
+// ------------------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------------------
+
+const getArticleByTopic = async () => {
+    const articles = await getCollection("news");
+    const topic = article.data.topic; // SACAMOS EL TIPO DE TOPICO DEL ARTICULO QUE SE VISITA PARA FILTRAR LOS DEMÁS
+
+    return articles.filter((article) => article.data.topic === topic);
+};
+
+const allArticlesTopic = await getArticleByTopic();
+const articlesTop = allArticlesTopic.slice(0, 3);
+const articlesRelated = allArticlesTopic.slice(3, 6);
+
+// Data fake para la noticia principal
+const dataArticle = { ...article.data };
+
+// Formato de fecha
+const formattedDate = new Intl.DateTimeFormat("es-ES", {
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+}).format(new Date(dataArticle.pubDate));
+
+// Clase de tag según global.css
+const normalizedTopic = dataArticle.topic.toLowerCase().trim();
+const categoryTagClass = `${normalizedTopic}-tag`;
+---
+
+<MainLayout
+    title={`${dataArticle.title} | El Vértice Global`}
+    description={dataArticle.description}
+>
+    <!-- NAVEGACIÓN RÁPIDA / BREADCRUMB -->
+    <div class="bg-primary/95 border-b border-quinary/20 py-3 section-padding">
+        <div
+            class="max-w-7xl mx-auto flex items-center justify-between text-xs text-secondary/70"
+        >
+            <div class="flex items-center gap-2">
+                <a
+                    href="/"
+                    class="hover:text-tertiary transition-colors flex items-center gap-1"
+                >
+                    <ArrowLeft class="w-3.5 h-3.5" />
+                    <span>Volver al inicio</span>
+                </a>
+                <span class="text-quinary/60">/</span>
+                <span class="capitalize text-secondary/90"
+                    >{dataArticle.topic}</span
+                >
+                <span class="text-quinary/60">/</span>
+                <span class="truncate max-w-50 md:max-w-96 text-secondary/50"
+                    >Artículo</span
+                >
+            </div>
+
+            <div class="flex items-center gap-3">
+                <button
+                    type="button"
+                    class="flex items-center gap-1.5 hover:text-tertiary transition-colors cursor-pointer"
+                    title="Compartir"
+                >
+                    <Share2 class="w-3.5 h-3.5 text-tertiary" />
+                    <span class="hidden sm:inline">Compartir</span>
+                </button>
+                <button
+                    type="button"
+                    class="flex items-center gap-1.5 hover:text-tertiary transition-colors cursor-pointer"
+                    title="Guardar"
+                >
+                    <Bookmark class="w-3.5 h-3.5" />
+                    <span class="hidden sm:inline">Guardar</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- HERO DE LA NOTICIA -->
+    <header
+        class="relative min-h-115 md:min-h-100 flex items-end overflow-hidden bg-primary"
+    >
+        <!-- Imagen de fondo con escala y transición -->
+        <img
+            src={dataArticle.image}
+            alt={dataArticle.title}
+            class="absolute inset-0 w-full h-full object-cover opacity-35 filter brightness-95"
+        />
+
+        <!-- Overlays multicapa para máxima legibilidad y profundidad -->
+        <div
+            class="absolute inset-0 bg-linear-to-t from-primary via-primary/80 to-transparent pointer-events-none"
+        >
+        </div>
+        <div
+            class="absolute inset-0 bg-radial from-transparent via-primary/30 to-primary pointer-events-none"
+        >
+        </div>
+
+        <!-- Contenido del Hero -->
+        <div
+            class="section-padding w-full max-w-7xl mx-auto relative z-10 pb-12 pt-20"
+        >
+            <div class="max-w-4xl flex flex-col gap-4">
+                <!-- Tag de Categoría & Tiempo de lectura -->
+                <div class="flex flex-wrap items-center gap-3">
+                    <span
+                        class={`text-xs font-bold capitalize tracking-wider px-3.5 py-1 rounded-full shadow-md backdrop-blur-xs ${categoryTagClass}`}
+                    >
+                        {dataArticle.topic}
+                    </span>
+
+                    <span
+                        class="inline-flex items-center gap-1.5 text-xs text-secondary/80 bg-quinary/40 border border-quinary/40 px-3 py-1 rounded-full backdrop-blur-xs"
+                    >
+                        <Clock class="w-3.5 h-3.5 text-tertiary" />
+                        <span>{dataArticle.readTime} min</span>
+                    </span>
+                </div>
+
+                <!-- Nombre / Titular de la Noticia -->
+                <h1
+                    class="text-2xl sm:text-3xl md:text-5xl font-extrabold italic text-secondary leading-tight tracking-tight"
+                >
+                    {dataArticle.title}
+                </h1>
+
+                <!-- Bajada / Descripción -->
+                <p
+                    class="text-base sm:text-lg md:text-xl text-secondary/85 leading-relaxed font-normal"
+                >
+                    {dataArticle.description}
+                </p>
+
+                <!-- Metadatos de Publicación: Autor y Fecha -->
+                <div
+                    class="flex flex-wrap items-center gap-6 pt-3 text-xs sm:text-sm text-secondary/80 border-t border-quinary/30"
+                >
+                    <!-- Autor -->
+                    <div class="flex items-center gap-2.5">
+                        <div
+                            class="w-9 h-9 rounded-full bg-linear-to-tr from-tertiary to-quaternary flex items-center justify-center text-white shadow-xs font-bold text-xs"
+                        >
+                            {dataArticle.avatar}
+                        </div>
+                        <div class="flex flex-col">
+                            <span
+                                class="font-bold text-secondary flex items-center gap-1"
+                            >
+                                <User
+                                    class="w-3.5 h-3.5 text-tertiary shrink-0"
+                                />
+                                {dataArticle.author}
+                            </span>
+                            <span class="text-[11px] text-secondary/60"
+                                >Redactor</span
+                            >
+                        </div>
+                    </div>
+
+                    <!-- Fecha -->
+                    <div class="flex items-center gap-1.5 text-secondary/80">
+                        <Calendar class="w-4 h-4 text-tertiary shrink-0" />
+                        <time
+                            datetime={dataArticle.pubDate.toDateString()}
+                            class="font-semibold text-secondary"
+                        >
+                            {formattedDate}
+                        </time>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- CONTENEDOR PRINCIPAL: MAIN + ASIDE -->
+    <div class="bg-secondary text-primary py-12 section-padding">
+        <div class="max-w-7xl mx-auto news-article-container">
+            <div>
+                <!-- CUERPO DE LA NOTA (MAIN) -->
+                <main
+                    class="news-article-main flex flex-col gap-8"
+                    set:html={article!.rendered!.html}
+                />
+                <!-- Caja de Autor al pie de la nota -->
+                <div
+                    class="mt-8 p-5 rounded-xl bg-primary text-secondary flex flex-col sm:flex-row items-center justify-center gap-5 shadow-md border border-quinary/20"
+                >
+                    <div
+                        class="w-16 h-16 rounded-full bg-linear-to-tr from-tertiary to-quaternary flex items-center justify-center text-white text-xl font-bold shrink-0 shadow-md"
+                    >
+                        <p>
+                            {article.data.avatar}
+                        </p>
+                    </div>
+                    <div
+                        class="flex flex-col+ items-center justify-center sm:justify-start gap-2"
+                    >
+                        <h4 class="font-bold text-lg text-secondary">
+                            {dataArticle.author}
+                        </h4>
+                        <span
+                            class="text-xs px-2.5 py-0.5 rounded-full bg-tertiary/20 text-tertiary font-semibold"
+                        >
+                            Autor Verificado
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ASIDE DERECHO (Noticias verticales con NewsCardSmall) -->
+            <aside class="news-article-aside flex flex-col gap-6">
+                <!-- Encabezado de la barra lateral -->
+                <div
+                    class="flex items-center justify-between pb-3 border-b-2 border-primary/10"
+                >
+                    <div class="flex items-center gap-2">
+                        <Flame class="w-5 h-5 text-tertiary" />
+                        <h3
+                            class="font-bold text-lg text-primary tracking-tight"
+                        >
+                            Articulos recomendados
+                        </h3>
+                    </div>
+                </div>
+
+                <!-- Lista vertical de NewsCardSmall -->
+                <div
+                    class="flex flex-col sm:max-w-[60%] lg:max-w-full mx-auto gap-5"
+                >
+                    {
+                        articlesTop.map((article) => (
+                            <div class="w-full">
+                                <NewsCardSmall article={article} />
+                            </div>
+                        ))
+                    }
+                </div>
+
+                <!-- Widget de suscripción rápida en el Aside -->
+                <div
+                    class="mt-4 p-5 rounded-xl bg-quinary text-secondary shadow-md flex flex-col gap-3"
+                >
+                    <div
+                        class="flex items-center gap-2 text-tertiary font-bold text-sm"
+                    >
+                        <Sparkles class="w-4 h-4" />
+                        <span>Alerta Informativa</span>
+                    </div>
+                    <h4 class="font-bold text-base text-secondary leading-snug">
+                        ¿Quieres recibir reportes especiales como este?
+                    </h4>
+                    <p class="text-xs text-secondary/75 leading-relaxed">
+                        Suscríbete a nuestra edición matutina gratuita con el
+                        resumen curado por nuestros redactores.
+                    </p>
+                    <a
+                        href="/#newsletter-section"
+                        class="mt-1 w-full text-center py-2.5 rounded-lg bg-tertiary hover:bg-quaternary text-quinary font-bold text-xs transition-colors italic uppercase tracking-wider"
+                    >
+                        Ir al Newsletter
+                    </a>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <!-- SECCIÓN INFERIOR: NOTICIAS RELACIONADAS (DEBAJO DE MAIN) -->
+    <section
+        class="section-padding py-14 bg-quinary border-t border-quinary/30"
+    >
+        <div class="max-w-7xl mx-auto flex flex-col gap-8">
+            <div
+                class="flex flex-col sm:flex-row sm:items-end justify-between gap-4"
+            >
+                <div>
+                    <span
+                        class="text-xs font-bold uppercase tracking-wider text-tertiary"
+                    >
+                        Continúa Leyendo
+                    </span>
+                    <h2
+                        class="text-2xl md:text-4xl font-extrabold text-secondary italic tracking-tight"
+                    >
+                        Noticias Relacionadas
+                    </h2>
+                </div>
+
+                <a
+                    href={`/topics/${dataArticle.topic}`}
+                    class="inline-flex items-center gap-1.5 text-sm font-bold text-tertiary hover:text-secondary transition-colors italic group w-fit"
+                >
+                    Ver toda la sección de <span class="uppercase"
+                        >{dataArticle.topic}</span
+                    >
+                    <ChevronRight
+                        class="w-4 h-4 group-hover:translate-x-1 transition-transform"
+                    />
+                </a>
+            </div>
+
+            <!-- Grid de Noticias Relacionadas -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {
+                    articlesRelated.map((article) => (
+                        <NewsCardNormal article={article} />
+                    ))
+                }
+            </div>
+        </div>
+    </section>
+</MainLayout>

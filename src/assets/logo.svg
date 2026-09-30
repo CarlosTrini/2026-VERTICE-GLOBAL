@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <!--
+    ¿Qué cosas se pueden agregar aquí (src/assets/)?
+    - Vectores SVG como este logotipo personalizado
+    - Ilustraciones vectoriales
+    - Fondos con gradientes SVG
+  -->
+  <defs>
+    <linearGradient id="astroGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6366f1" />
+      <stop offset="50%" stop-color="#8b5cf6" />
+      <stop offset="100%" stop-color="#ec4899" />
+    </linearGradient>
+  </defs>
+  <rect width="100" height="100" rx="24" fill="url(#astroGrad)" />
+  <path d="M50 20 L68 70 L50 60 L32 70 Z" fill="#ffffff" />
+  <circle cx="50" cy="45" r="5" fill="#f59e0b" />
+</svg>

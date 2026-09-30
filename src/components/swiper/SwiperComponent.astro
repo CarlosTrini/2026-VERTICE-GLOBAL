@@ -1,0 +1,111 @@
+---
+// npm install astro-swiper
+// NOTA: AL USAR ESTE COMPONENTE, EN EL ARCHIVO QUE LO LLAMES, DEBES IMPORTAR EL SwiperSlide... YA QUE SIN ESO
+// NO FUNCIONARÁ...  ES LO QUE MANDARÁS EN EL SLOT  ===> import { SwiperSlide } from "astro-swiper";
+import {
+    Swiper,
+    SwiperButtonNext,
+    SwiperButtonPrev,
+    SwiperPagination,
+    SwiperWrapper,
+    // SwiperSlide,
+} from "astro-swiper";
+
+import type { SwiperI } from "./swiperType";
+
+import css from "./swiperStyles.module.css";
+
+interface Props {
+    optionsSwiper?: SwiperI;
+    classSwiperWrapperUser?: string;
+    classSwiperUser?: string;
+    navigationUser?: boolean;
+    paginationUser?: boolean;
+}
+
+const { optionsSwiper, classSwiperWrapperUser, classSwiperUser, navigationUser = false, paginationUser = false} = Astro.props;
+
+const defaultOptionsSwiper: SwiperI = {
+    slidesPerView: 1,
+    spaceBetween: 20,
+    loop: true,
+    autoplay: {
+        delay: 3000,
+        disableOnInteraction: false,
+        pauseOnMouseEnter: true,
+    },
+    pagination: {
+        clickable: true,
+        el: ".swiper-pagination",
+        type: "bullets",
+    },
+    navigation: {
+        nextEl: ".swiper-button-next",
+        prevEl: ".swiper-button-prev",
+    },
+    breakpoints: {
+        640: {
+            // sm
+            slidesPerView: 1,
+            spaceBetween: 10,
+        },
+        768: {
+            // md
+            slidesPerView: 2,
+            spaceBetween: 24,
+        },
+        1024: {
+            // lg
+            slidesPerView: 3,
+            spaceBetween: 32,
+        },
+        1280: {
+            // xl
+            slidesPerView: 4,
+            spaceBetween: 40,
+        },
+        1536: {
+            // 2xl
+            slidesPerView: 5,
+            spaceBetween: 48,
+        },
+    },
+};
+
+const options = optionsSwiper ? optionsSwiper : defaultOptionsSwiper;
+
+
+options.pagination = paginationUser ? defaultOptionsSwiper.pagination : undefined;
+options.navigation = paginationUser ? defaultOptionsSwiper.navigation : undefined;
+---
+
+<Swiper options={options} class={`${css["classSwiper"]} ${classSwiperUser} `}>
+    <SwiperWrapper
+        class={`${css["classSwiperWrapper"]} ${classSwiperWrapperUser}`}
+    >
+        <slot />
+    </SwiperWrapper>
+
+    {
+        paginationUser && (
+            <div class="">
+                <!-- Pagination -->
+                <!-- Bullets -->
+                <SwiperPagination />
+            </div>
+        )
+    }
+
+
+    {
+        navigationUser && (
+            <>
+                <!-- Flechas -->
+                <SwiperButtonNext />
+                <SwiperButtonPrev />
+                
+                
+            </>
+        )
+    }
+</Swiper>
